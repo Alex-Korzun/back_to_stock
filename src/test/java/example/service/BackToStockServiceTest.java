@@ -5,7 +5,6 @@ import example.model.ProductCategory;
 import example.model.User;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
-
 import org.junit.jupiter.api.Test;
 
 class BackToStockServiceTest {
@@ -30,14 +29,12 @@ class BackToStockServiceTest {
 
         Product medicine = new Product("1", ProductCategory.MEDICAL);
 
-        List<User> expected = List.of(userWithPremium, userWithBigAgeAndMedicine, userWithLowPriority);
-
         backToStockService.subscribe(userWithPremium, medicine);
         backToStockService.subscribe(userWithLowPriority, medicine);
         backToStockService.subscribe(userWithBigAgeAndMedicine, medicine);
 
+        List<User> expected = List.of(userWithPremium, userWithBigAgeAndMedicine, userWithLowPriority);
         List<User> actual = backToStockService.subscribedUsers(medicine);
-
         Assertions.assertEquals(expected, actual);
     }
 
@@ -60,12 +57,11 @@ class BackToStockServiceTest {
 
         Product digital = new Product("1", ProductCategory.DIGITAL);
 
-        List<User> expected = List.of(userWithPremium, userWithBigAge, userWithLowPriority);
-
         backToStockService.subscribe(userWithBigAge, digital);
         backToStockService.subscribe(userWithLowPriority, digital);
         backToStockService.subscribe(userWithPremium, digital);
 
+        List<User> expected = List.of(userWithPremium, userWithBigAge, userWithLowPriority);
         List<User> actual = backToStockService.subscribedUsers(digital);
         Assertions.assertEquals(expected, actual);
     }
