@@ -35,10 +35,11 @@ public class Main {
         //StorageService storageService = new StorageServiceImpl();
         BackToStockService backToStockService = new BackToStockServiceImpl();
 
+        backToStockService.subscribe(user4, medicine);
         backToStockService.subscribe(user, medicine);
         backToStockService.subscribe(user2, medicine);
         backToStockService.subscribe(user3, medicine);
-        backToStockService.subscribe(user4, medicine);
+
 
         //System.out.println(backToStockService.subscribedUsers(books).toString());
         System.out.println(backToStockService.subscribedUsers(medicine).toString());
