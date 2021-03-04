@@ -3,19 +3,13 @@ package example.service;
 import example.model.Product;
 import example.model.ProductCategory;
 import example.model.User;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
+import org.junit.jupiter.api.Assertions;
+
+import org.junit.jupiter.api.Test;
 
 class BackToStockServiceTest {
     private final BackToStockService backToStockService = new BackToStockServiceImpl();
-
-    @BeforeAll
-    static void beforeAll() {
-
-    }
 
     @Test
     void testSubscribeWithMedicine_Ok() {
@@ -29,22 +23,15 @@ class BackToStockServiceTest {
         userWithBigAgeAndMedicine.setAge(72);
         userWithBigAgeAndMedicine.setPremium(false);
 
-        User userWithBigAgeAndRegularProduct = new User();
-        userWithBigAgeAndRegularProduct.setName("John");
-        userWithBigAgeAndRegularProduct.setAge(72);
-        userWithBigAgeAndRegularProduct.setPremium(false);
-
         User userWithLowPriority = new User();
         userWithLowPriority.setName("Max");
         userWithLowPriority.setAge(45);
         userWithLowPriority.setPremium(false);
 
         Product medicine = new Product("1", ProductCategory.MEDICAL);
-        Product digital = new Product("2", ProductCategory.DIGITAL);
 
         List<User> expected = List.of(userWithPremium, userWithBigAgeAndMedicine, userWithLowPriority);
 
-        backToStockService.subscribe(userWithBigAgeAndRegularProduct, digital);
         backToStockService.subscribe(userWithPremium, medicine);
         backToStockService.subscribe(userWithLowPriority, medicine);
         backToStockService.subscribe(userWithBigAgeAndMedicine, medicine);
@@ -81,5 +68,71 @@ class BackToStockServiceTest {
 
         List<User> actual = backToStockService.subscribedUsers(digital);
         Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void testSubscribeWithDifferentProducts_Ok() {
+        User userWithPremiumAndMedicine = new User();
+        userWithPremiumAndMedicine.setName("Pepper");
+        userWithPremiumAndMedicine.setAge(20);
+        userWithPremiumAndMedicine.setPremium(true);
+
+        User userWithPremiumAndRegularProduct = new User();
+        userWithPremiumAndRegularProduct.setName("Peter");
+        userWithPremiumAndRegularProduct.setAge(45);
+        userWithPremiumAndRegularProduct.setPremium(true);
+
+        User userWithBigAgeAndMedicine = new User();
+        userWithBigAgeAndMedicine.setName("Steve");
+        userWithBigAgeAndMedicine.setAge(70);
+        userWithBigAgeAndMedicine.setPremium(false);
+
+        User userUnderSeventyWithMedicine = new User();
+        userUnderSeventyWithMedicine.setName("Tony");
+        userUnderSeventyWithMedicine.setAge(69);
+        userUnderSeventyWithMedicine.setPremium(false);
+
+        User userWithBigAgeAndRegularProduct = new User();
+        userWithBigAgeAndRegularProduct.setName("James");
+        userWithBigAgeAndRegularProduct.setAge(72);
+        userWithBigAgeAndRegularProduct.setPremium(false);
+
+        User userWithLowPriorityAndMedicine = new User();
+        userWithLowPriorityAndMedicine.setName("Bruce");
+        userWithLowPriorityAndMedicine.setAge(45);
+        userWithLowPriorityAndMedicine.setPremium(false);
+
+        User userWithLowPriorityAndRegularProduct = new User();
+        userWithLowPriorityAndRegularProduct.setName("Jarvis");
+        userWithLowPriorityAndRegularProduct.setAge(32);
+        userWithLowPriorityAndRegularProduct.setPremium(false);
+
+        Product medicine = new Product("1", ProductCategory.MEDICAL);
+        Product books = new Product("2", ProductCategory.BOOKS);
+        Product digital = new Product("3", ProductCategory.DIGITAL);
+
+        backToStockService.subscribe(userWithLowPriorityAndRegularProduct, books);
+        backToStockService.subscribe(userWithLowPriorityAndRegularProduct, digital);
+        backToStockService.subscribe(userWithPremiumAndMedicine, medicine);
+        backToStockService.subscribe(userWithBigAgeAndMedicine, medicine);
+        backToStockService.subscribe(userWithPremiumAndRegularProduct, digital);
+        backToStockService.subscribe(userWithPremiumAndRegularProduct, books);
+        backToStockService.subscribe(userWithBigAgeAndRegularProduct, books);
+        backToStockService.subscribe(userUnderSeventyWithMedicine, medicine);
+        backToStockService.subscribe(userWithLowPriorityAndMedicine, medicine);
+
+        List<User> medicineExpected = List.of(userWithPremiumAndMedicine, userWithBigAgeAndMedicine,
+                userUnderSeventyWithMedicine, userWithLowPriorityAndMedicine);
+        List<User> medicineActual = backToStockService.subscribedUsers(medicine);
+        Assertions.assertEquals(medicineExpected, medicineActual);
+
+        List<User> booksExpected = List.of(userWithPremiumAndRegularProduct,
+                userWithBigAgeAndRegularProduct, userWithLowPriorityAndRegularProduct);
+        List<User> booksActual = backToStockService.subscribedUsers(books);
+        Assertions.assertEquals(booksExpected, booksActual);
+
+        List<User> digitalExpected = List.of(userWithPremiumAndRegularProduct, userWithLowPriorityAndRegularProduct);
+        List<User> digitalActual = backToStockService.subscribedUsers(digital);
+        Assertions.assertEquals(digitalExpected, digitalActual);
     }
 }
